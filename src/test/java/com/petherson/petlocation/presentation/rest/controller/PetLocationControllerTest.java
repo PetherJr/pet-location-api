@@ -1,6 +1,5 @@
 package com.petherson.petlocation.presentation.rest.controller;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ class PetLocationControllerTest {
 
     @Test
     void receiveLocation_ShouldReturnResolvedLocation() throws Exception {
-        // Given
         String requestBody = """
                 {
                   "sensorId": "SEN-123",
@@ -65,7 +63,6 @@ class PetLocationControllerTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(mockResponse)));
 
-        // When & Then
         mockMvc.perform(post("/api/v1/pets/locations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
@@ -78,7 +75,6 @@ class PetLocationControllerTest {
 
     @Test
     void receiveLocation_ShouldReturnPartialData_WhenProviderReturnsMissingFields() throws Exception {
-        // Given
         String requestBody = """
                 {
                   "sensorId": "SEN-123",
@@ -106,7 +102,6 @@ class PetLocationControllerTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(mockResponse)));
 
-        // When & Then
         mockMvc.perform(post("/api/v1/pets/locations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
@@ -117,7 +112,6 @@ class PetLocationControllerTest {
 
     @Test
     void receiveLocation_ShouldReturn504_WhenProviderTimeouts() throws Exception {
-        // Given
         String requestBody = """
                 {
                   "sensorId": "SEN-123",
@@ -129,9 +123,8 @@ class PetLocationControllerTest {
 
         stubFor(get(urlPathEqualTo("/reverse"))
                 .willReturn(aResponse()
-                        .withFixedDelay(6000))); // Higher than 5s timeout
-
-        // When & Then
+                        .withFixedDelay(6000)));
+        
         mockMvc.perform(post("/api/v1/pets/locations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))

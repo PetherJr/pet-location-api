@@ -10,10 +10,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.stereotype.Service;
 
-/**
- * Implementation of the ResolvePetLocationUseCase.
- * Orchestrates reverse geocoding and persistence.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -44,7 +40,6 @@ public class PetLocationService implements ResolvePetLocationUseCase {
         resolved.setLongitude(location.getLongitude());
         resolved.setProvider(geocodingProvider.getProviderName());
         
-        // 3. Persist the event
         log.info("Persisting location event for sensorId: {}", location.getSensorId());
         return petLocationRepository.save(resolved);
     }

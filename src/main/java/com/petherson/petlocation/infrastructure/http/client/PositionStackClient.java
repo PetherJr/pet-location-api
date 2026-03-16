@@ -13,9 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Locale;
 import java.util.Optional;
 
-/**
- * Implementation of GeocodingProvider for PositionStack.
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j

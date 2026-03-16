@@ -46,7 +46,6 @@ class PetLocationServiceTest {
                 geocodingFailureCounter
         );
 
-        // Mocking timer record method globally (lenient)
         lenient().when(geocodingTimer.record(any(Supplier.class))).thenAnswer(invocation -> {
             Supplier<PetLocation> supplier = invocation.getArgument(0);
             return supplier.get();
@@ -55,7 +54,6 @@ class PetLocationServiceTest {
 
     @Test
     void execute_ShouldResolveAndSaveLocation() {
-        // Given
         PetLocation input = PetLocation.builder()
                 .sensorId("SEN-123")
                 .latitude(-23.561684)
@@ -75,10 +73,8 @@ class PetLocationServiceTest {
         when(geocodingProvider.getProviderName()).thenReturn("positionstack");
         when(petLocationRepository.save(any(PetLocation.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        // When
         PetLocation result = petLocationService.execute(input);
 
-        // Then
         assertEquals("SEN-123", result.getSensorId());
         assertEquals("Brasil", result.getCountry());
         assertEquals("positionstack", result.getProvider());
@@ -89,7 +85,6 @@ class PetLocationServiceTest {
 
     @Test
     void execute_ShouldHandleGeocodingFailure() {
-        // Given
         PetLocation input = PetLocation.builder()
                 .sensorId("SEN-123")
                 .latitude(-23.561684)
@@ -97,10 +92,8 @@ class PetLocationServiceTest {
                 .timestamp(OffsetDateTime.now())
                 .build();
 
-        // Override the global lenient stubbing specifically for this test
         lenient().when(geocodingTimer.record(any(Supplier.class))).thenThrow(new RuntimeException("API Error"));
 
-        // When & Then
         RuntimeException exception = assertThrows(RuntimeException.class, () -> petLocationService.execute(input));
         assertEquals("API Error", exception.getMessage());
 

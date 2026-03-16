@@ -5,9 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * Data Transfer Objects for PositionStack API responses.
- */
 @Data
 public class PositionStackResponse {
     private List<PositionStackData> data;

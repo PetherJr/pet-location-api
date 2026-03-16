@@ -26,8 +26,8 @@ public class PetLocationRepositoryAdapter implements PetLocationRepository {
                 .provider(petLocation.getProvider())
                 .build();
         
-        PetLocationEntity saved = jpaRepository.save(entity);
+        jpaRepository.save(entity);
         
-        return petLocation; // Or map 'saved' back to domain if ID is needed
+        return petLocation;
     }
 }
