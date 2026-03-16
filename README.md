@@ -1,83 +1,63 @@
 # Itau Challenge - Pet Location API
 
 ## Descrição do projeto
-Esta é uma API robusta projetada para gerenciar e rastrear a localização de animais de estimação. O sistema recebe coordenadas geográficas (latitude e longitude), realiza a geocodificação reversa para obter um endereço legível e armazena o histórico de localização do pet. Foi desenvolvida com foco extremo em **Qualidade de Código**, **Arquitetura Limpa** e **Extensibilidade**.
+Esta é uma API robusta projetada para gerenciar e rastrear a localização de animais de estimação. O sistema recebe coordenadas geográficas (latitude e longitude) vinculadas a um ID de sensor, realiza a geocodificação reversa para obter um endereço legível e armazena o histórico de localização. Foi desenvolvida seguindo os princípios de **Arquitetura Limpa (Clean Architecture)** e **SOLID**.
 
 ## Tecnologias
-- **Java 17** & **Spring Boot 4.0.3**
+- **Java 17** & **Spring Boot 3.4.3**
 - **Spring Data JPA** (Persistência)
-- **H2 Database** (Banco em memória para testes/demo)
+- **H2 Database** (Banco em memória)
 - **SpringDoc OpenAPI (Swagger)** (Documentação de API)
-- **Micrometer & Actuator** (Observabilidade e Métricas de Negócio)
+- **Micrometer & Actuator** (Observabilidade e Métricas)
 - **JaCoCo** (Code Coverage)
-- **AspectJ (AOP)** (Logging Estruturado e Auditoria)
+- **AspectJ (AOP)** (Logging Estruturado)
 - **Maven** (Gestão de dependências)
-- **spring-dotenv** (Gestão segura de variáveis de ambiente)
 
 ## Instalação e Configuração
 Para clonar este projeto usando Git:
 ```bash
-git clone https://github.com/petherson/pet-location-api.git
+git clone https://github.com/PetherJr/pet-location-api.git
 ```
-Ou baixe o arquivo ZIP do repositório e extraia-o em sua máquina.
 
-## Pré Requisitos
-Para rodar este projeto, você precisará ter instalado em sua máquina:
+## Pré-requisitos
 - **Java JDK 17** ou superior
 - **Apache Maven 3.8+**
-- Um cliente para testes de API (Postman, Insomnia ou cURL)
-- Uma chave de API do **PositionStack** (opcional, para teste real)
 
-## Compilação
-Para compilar o projeto e baixar todas as dependências:
+## Compilação e Testes
+Para compilar o projeto e rodar os testes:
 ```bash
-cd pet-location-api
-mvn clean compile
+mvn clean compile test
 ```
 
-## Configuração das variáveis de ambiente
-Este projeto utiliza um arquivo `.env` para proteger segredos e configurar o ambiente.
-1. Na raiz do projeto, crie um arquivo chamado `.env` (o arquivo já foi criado para você neste ambiente).
-2. Configure as seguintes variáveis:
-```env
-# Define o provedor de geocodificação: 'mock' (padrão) ou 'positionstack'
-GEOCODING_PROVIDER=mock
-# Sua chave de API do PositionStack (necessária se o provider for 'positionstack')
-GEOCODING_API_KEY=21e714075c4ea05682406a43a851075d
-```
+## Configuração (Variáveis de Ambiente)
+Este projeto utiliza `.env` (ou variáveis de ambiente) para configuração:
+- `GEOCODING_PROVIDER`: `mock` (padrão) ou `positionstack`.
+- `GEOCODING_API_KEY`: Chave da API caso use `positionstack`.
 
-## Execução da aplicação
-Para executar a aplicação, rode os comandos:
+## Execução
 ```bash
 mvn spring-boot:run
 ```
 A API estará disponível em `http://localhost:8080`.
 
 ## Documentação da API (Swagger)
-Este projeto utiliza a especificação OpenAPI para documentação e catálogo de APIs. Depois de executar a aplicação, é possível consultar todas as operações fornecidas pelo serviço e testá-las respectivamente acessando o endereço:
+Acesse a documentação interativa em:
 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ### Principais Endpoints:
-- `POST /api/pets/{id}/location`: Atualiza a localização de um pet.
-- `GET /actuator/health`: Verifica a saúde do sistema.
-- `GET /actuator/prometheus`: Métricas brutas para monitoramento.
+- `POST /api/v1/pets/locations`: Recebe uma localização (latitude, longitude, sensorId).
+- `GET /actuator/health`: Saúde do sistema.
+- `GET /actuator/prometheus`: Métricas para monitoramento.
 
-## Solução
-Para atender da melhor forma os requisitos de escalabilidade e manutenibilidade, apliquei os seguintes padrões e princípios:
-
-### Clean Architecture & SOLID
-A aplicação é dividida em camadas que isolam a regra de negócio da infraestrutura:
-- **Domain**: Núcleo do sistema com Entidades e Value Objects (Coordinates) validados.
-- **Application**: Casos de uso desacoplados via Ports.
-- **Infrastructure**: Implementações detalhadas (JPA, HTTP Clients).
-
-### Design Patterns Utilizados
-- **Strategy Pattern (Geocoding)**: Implementei múltiplas estratégias de geocodificação (`Mock` e `PositionStack`). Isso permite trocar o provedor de mapas sem alterar uma única linha do serviço de Pet.
-- **Factory (Spring Managed)**: Utilizei o mecanismo de `@ConditionalOnProperty` do Spring para atuar como uma Factory estática em tempo de carregamento, instanciando o adaptador correto baseado no arquivo `.env`.
-- **Observer/Domain Events**: O domínio dispara eventos (`PetLocationUpdatedEvent`) quando uma localização muda, permitindo que outros módulos (como um futuro sistema de notificação) reajam de forma assíncrona.
-- **Adapter Pattern**: Fundamental para integrar o sistema com o Banco de Dados JPA e APIs externas de forma plugável.
+## Arquitetura
+A aplicação segue os princípios da **Arquitetura Limpa**:
+- **Domain**: Contém a lógica de negócio e modelos (Entities).
+- **Application**: Orquestra os casos de uso (`ResolvePetLocationUseCase`) e define as portas de entrada/saída.
+- **Infrastructure**: Contém os detalhes técnicos (Adaptadores de persistência, Clientes HTTP, Configurações).
+- **Presentation**: Camada de entrada (REST Controllers e DTOs).
 
 ### Observabilidade e Qualidade
-- **AOP (Aspect Oriented Programming)**: Usei aspectos para interceptar chamadas e gerar logs de performance sem poluir a lógica de negócio.
-- **RFC 7807 (Problem Details)**: Erros da API seguem um padrão rico e semântico.
-- **Testes**: Cobertura completa com testes de unidade (Mocks) e integração (Application Context).
+- **AOP**: Logs estruturados para cada execução de caso de uso com Correlation ID.
+- **Metric**: Contagem de requisições e monitoramento de performance com Micrometer.
+- **Problem Details (RFC 7807)**: Tratamento de erros padronizado.
+- **Testes**: Suite de testes automatizados garantindo a integridade do fluxo principal.
