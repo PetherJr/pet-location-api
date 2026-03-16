@@ -22,7 +22,7 @@ public class PositionStackClient implements GeocodingProvider {
 
     private final RestTemplate restTemplate;
 
-    @Value("${positionstack.api.key}")
+    @Value("${geocoding.api.key:}")
     private String apiKey;
 
     @Value("${positionstack.api.url:http://api.positionstack.com/v1/reverse}")
