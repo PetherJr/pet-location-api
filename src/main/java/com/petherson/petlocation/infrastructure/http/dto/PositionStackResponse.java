@@ -30,6 +30,12 @@ public class PositionStackResponse {
         private String neighborhood;
         @JsonProperty("city")
         private String city;
+        @JsonProperty("locality")
+        private String locality;
+        @JsonProperty("county")
+        private String county;
+        @JsonProperty("administrative_area")
+        private String administrativeArea;
         @JsonProperty("region")
         private String region;
         @JsonProperty("region_code")

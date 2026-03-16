@@ -60,9 +60,10 @@ public class PositionStackClient implements GeocodingProvider {
                 .map(data -> PetLocation.builder()
                         .country(data.getCountry())
                         .state(data.getRegionCode())
-                        .city(data.getCity())
+                        .city(data.getCity() != null ? data.getCity() : 
+                              data.getLocality() != null ? data.getLocality() : data.getCounty())
                         .neighborhood(data.getNeighborhood())
-                        .streetAddress(data.getStreet())
+                        .streetAddress(data.getStreet() != null ? data.getStreet() : data.getName())
                         .build())
                 .orElse(PetLocation.builder().build());
     }
