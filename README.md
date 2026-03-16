@@ -30,9 +30,12 @@ mvn clean compile test
 ```
 
 ## Configuração (Variáveis de Ambiente)
-Este projeto utiliza `.env` (ou variáveis de ambiente) para configuração:
-- `GEOCODING_PROVIDER`: `mock` (padrão) ou `positionstack`.
-- `GEOCODING_API_KEY`: Chave da API caso use `positionstack`.
+Este projeto utiliza `.env` (ou variáveis de ambiente) para configuração. Crie um arquivo `.env` na raiz do projeto seguindo o formato:
+
+```env
+GEOCODING_API_KEY=Chave da API caso use positionstack
+GEOCODING_PROVIDER=mock (padrão) ou positionstack
+```
 
 ## Execução
 ```bash
