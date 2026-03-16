@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -32,7 +33,7 @@ public class PositionStackClient implements GeocodingProvider {
     public PetLocation reverseGeocode(Double latitude, Double longitude) {
         String url = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("access_key", apiKey)
-                .queryParam("query", String.format("%f,%f", latitude, longitude))
+                .queryParam("query", String.format(Locale.US, "%f,%f", latitude, longitude))
                 .toUriString();
 
         log.debug("Calling PositionStack API for coordinates: {}, {}", latitude, longitude);
